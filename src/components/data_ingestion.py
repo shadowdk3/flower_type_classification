@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 
 from src.components.data_transformation import DataTransformation
 
+from src.components.model_trainer import ModelTrainer
+
 @dataclass
 class DataIngestionConfig:
     train_data_path: str=os.path.join('artifacts', "train")
@@ -98,3 +100,8 @@ if __name__ == "__main__":
     
     data_transformation = DataTransformation()
     train_loader, test_loader, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+    
+    modeltrainer = ModelTrainer()
+    best_epoch, best_accuracy, best_loss = modeltrainer.initiate_model_trainer(train_loader, test_loader)
+    
+    logging.info(f'The best model is trained at {best_epoch} epoch: accuracy - {best_accuracy}, loss - {best_loss}')

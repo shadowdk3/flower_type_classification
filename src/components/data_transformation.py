@@ -85,7 +85,7 @@ class DataTransformation:
         try:
             device = "cuda" if torch.cuda.is_available() else "cpu"
 
-            model = models.resnet50(pretrained=True)
+            model = models.resnet50(weights='ResNet50_Weights.DEFAULT')
 
             for param in model.parameters():
                 param.requires_grad = False
