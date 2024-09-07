@@ -1,0 +1,51 @@
+<!-- update_image.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flower Type Classifcation</title>
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flower Type Classifcation</h1>
+    <p>Select images for prediction</p>
+    <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" onchange="previewImage()">
+        <h3>Preview:</h3>
+        <div id="imagePreview" style="display: none;">
+            <img id="preview" src="" alt="Image Preview">
+        </div>
+        <div>
+            <button type="submit">Predict</button>
+        </div>
+        <h3>Result:</h3>
+        <div id="resultDisplay">{{ result }}</div>
+    </form>
+    
+    <script>
+        function previewImage() {
+            var fileInput = document.getElementById('fileInput');
+            var imagePreview = document.getElementById('imagePreview');
+            var preview = document.getElementById('preview');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+    </script>
+</body>
+</html>

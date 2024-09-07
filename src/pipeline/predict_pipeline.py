@@ -3,12 +3,8 @@ import sys
 from src.exception import CustomException
 from src.utils import load_object, load_checkpoint
 
-from torchvision import models
-import torch.optim as optim
-
 from PIL import Image
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 import torch
         
 class PredicPipeline:
@@ -25,7 +21,6 @@ class PredicPipeline:
         self.data_transforms = object['transform']
         self.device = object['device']
         
-        # optimizer = optim.Adam(model.parameters(), lr=0.01)
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
             
@@ -49,7 +44,3 @@ class PredicPipeline:
         
         except Exception as e:
             raise CustomException(e, sys)
-        
-if __name__ == "__main__":
-    pred_pipeline = PredicPipeline()
-    pred_pipeline.predict('data/raw/daisy/4281102584_c548a69b81_m.jpg')

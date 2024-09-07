@@ -20,6 +20,10 @@ https://www.kaggle.com/datasets/lara311/flowers-five-classes
 - Sunflower: 495 images
 - Tulip: 607 images
 
+## Flask
+
+![demo](/ref/flower_type_predict.gif)
+
 ## [Classification with resnet50](https://github.com/shadowdk3/flower_type_classification/blob/master/notebook/classification.ipynb)
 
 ### Dataset
