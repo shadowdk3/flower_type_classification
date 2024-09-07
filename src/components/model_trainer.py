@@ -4,30 +4,27 @@ from dataclasses import dataclass
 
 from src.exception import CustomException
 from src.logger import logging
-from src.utils import save_object, load_object
+from src.utils import load_object
 
 import torch
-import torch.optim as optim 
-import torch.nn as nn
 
 from tqdm import tqdm
 
 @dataclass
 class ModelTrainerConfig:
-    trained_model_file_path=os.path.join('artifacts', 'model.pkl')
-    preprocessor_file_path=os.path.join('artifacts', 'preprocessor.pkl')
-    checkpoint_path = 'checkpoint'
+    trained_model_file_path=os.path.join('artifacts', 'checkpoint.pkl')
+    preprocessor_file_path=os.path.join('artifacts', 'model.pkl')
     
 class ModelTrainer:
     def __init__(self):
-        self.model_trainer_config=ModelTrainerConfig()
+        self.model_trainer_config = ModelTrainerConfig()
         
-        os.makedirs(self.model_trainer_config.checkpoint_path, exist_ok=True)
-
-        self.model = load_object(self.model_trainer_config.preprocessor_file_path)
-        self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.01)
-
+        object = load_object(self.model_trainer_config.preprocessor_file_path)
+        self.model = object['model']
+        self.criterion = object['criterion']
+        self.optimizer = object['optimizer']
+        self.device = object['device']
+        
     def train(self, device, model, data, targets):
         model.train()
         data = data.to(device=device)
@@ -62,7 +59,7 @@ class ModelTrainer:
     
     def initiate_model_trainer(self, train_loader, test_loader):
         try:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
+            
 
             logging.info("model load: %s", self.model)
             num_epoch = 10
@@ -79,7 +76,7 @@ class ModelTrainer:
                 losses = []
                 
                 for batch_idx, (data, targets) in loop:
-                    loss, train_correct_predictions, train_total_samples = self.train(device, self.model, data, targets)
+                    loss, train_correct_predictions, train_total_samples = self.train(self.device, self.model, data, targets)
                     losses.append(loss)
                     train_correct_predictions += train_correct_predictions
                     train_total_samples += train_total_samples
@@ -91,7 +88,7 @@ class ModelTrainer:
                 logging.info(f'epoch {epoch}: loss={losses[epoch]}, accuracy={train_accuracy}')
                 
                 # Validation loop
-                correct_predictions, total_samples = self.test(device, self.model, test_loader)
+                correct_predictions, total_samples = self.test(self.device, self.model, test_loader)
 
                 # Calculate validation accuracy
                 accuracy = correct_predictions / total_samples * 100
@@ -101,7 +98,7 @@ class ModelTrainer:
                     best_accuracy = accuracy
                     best_epoch = epoch
                     best_loss = loss
-                    checkpoint_path = "./checkpoint/best_checkpoint.pt"
+                    checkpoint_path = self.model_trainer_config.trained_model_file_path
                     
                     # save model
                     torch.save({
@@ -109,7 +106,7 @@ class ModelTrainer:
                         'model_state_dict': self.model.state_dict(),
                         'optimizer_state_dict': self.optimizer.state_dict(),
                         'loss': loss,
-                        'accuracy': accuracy
+                        'accuracy': accuracy,
                     }, checkpoint_path)
             
             return best_epoch, best_accuracy, best_loss

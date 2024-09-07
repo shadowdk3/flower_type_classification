@@ -4,6 +4,8 @@ import sys
 
 from src.exception import CustomException
 
+import torch
+
 def save_object(file_path, obj):
     try:
         dir_path = os.path.dirname(file_path)
@@ -20,6 +22,14 @@ def load_object(file_path):
     try:
         with open(file_path, "rb") as file_obj:
             return dill.load(file_obj)
+        
+    except Exception as e:
+        raise CustomException(e, sys)
+    
+def load_checkpoint(file_path):
+    try:
+        checkpoint = torch.load(file_path)
+        return checkpoint
     
     except Exception as e:
         raise CustomException(e, sys)

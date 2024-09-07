@@ -8,11 +8,13 @@ from src.logger import logging
 import torch
 import torch.nn as nn
 from torchvision import models
-from torchvision import datasets, transforms
+from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
 
 from PIL import Image
 from src.utils import save_object
+
+import torch.optim as optim 
 
 class_to_label = {
     0: 'daisy',
@@ -26,7 +28,7 @@ label_to_class = {v: k for k, v in class_to_label.items()}
 
 @dataclass
 class DataTransformationConfig:
-    preprocessor_obj_file_path=os.path.join('artifacts', "preprocessor.pkl")
+    preprocessor_obj_file_path=os.path.join('artifacts', "model.pkl")
     
 class ImageLoader(Dataset):
     def __init__(self, dataset, transform=None):
@@ -95,7 +97,8 @@ class DataTransformation:
 
             model.to(device)
             
-            return model
+            return model, device
+        
         except Exception as e:
             raise CustomException(e, sys)
 
@@ -107,7 +110,14 @@ class DataTransformation:
             train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)         
             test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)         
 
-            preprocessing_obj = self.data_model()
+            preprocessing_obj = {}
+            model, device = self.data_model()
+            preprocessing_obj['model'] = model
+            preprocessing_obj['class_to_label'] = class_to_label
+            preprocessing_obj['criterion'] = nn.CrossEntropyLoss()
+            preprocessing_obj['optimizer'] = optim.Adam(model.parameters(), lr=0.01)
+            preprocessing_obj['transform'] = self.get_data_transformer_object()
+            preprocessing_obj['device'] = device
                    
             logging.info(f"Saved preprocessing object.")
 
