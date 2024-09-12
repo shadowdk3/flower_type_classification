@@ -13,18 +13,13 @@ from torch.utils.data import DataLoader, Dataset
 
 from PIL import Image
 from src.utils import save_object
+import src.utils
 
 import torch.optim as optim 
 
-class_to_label = {
-    0: 'daisy',
-    1: 'dandelion',
-    2: 'rose',
-    3: 'sunflower',
-    4: 'tulip',
-}
-
-label_to_class = {v: k for k, v in class_to_label.items()}
+labelmapping = src.utils.LabelMapping()
+class_to_label = labelmapping.class_to_label
+label_to_class = labelmapping.label_to_class
 
 @dataclass
 class DataTransformationConfig:
@@ -32,7 +27,6 @@ class DataTransformationConfig:
     
 class ImageLoader(Dataset):
     def __init__(self, dataset, transform=None):
-        
         datafiles = []
         for root, dirs, files in os.walk(dataset):
             for file_name in files:

@@ -6,6 +6,17 @@ from src.exception import CustomException
 
 import torch
 
+class LabelMapping:
+    class_to_label = {
+        0: 'daisy',
+        1: 'dandelion',
+        2: 'rose',
+        3: 'sunflower',
+        4: 'tulip',
+    }
+
+    label_to_class = {v: k for k, v in class_to_label.items()}
+
 def save_object(file_path, obj):
     try:
         dir_path = os.path.dirname(file_path)

@@ -59,8 +59,6 @@ class ModelTrainer:
     
     def initiate_model_trainer(self, train_loader, test_loader):
         try:
-            
-
             logging.info("model load: %s", self.model)
             num_epoch = 10
             best_accuracy = 0

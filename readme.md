@@ -7,8 +7,27 @@
 
 ## Install dependencies
 
-- torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl
-- torchvision-0.15.1-cp38-cp38-manylinux2014_aarch64.whl
+```
+pip install -U pip
+pip install -r requirments.txt
+pip install wheels/torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl
+pip install wheels/torchvision-0.15.1-cp38-cp38-manylinux2014_aarch64.whl
+```
+
+## Run Script
+
+```
+cd /path/to/project
+chmod +x srcipt/setup-venv.sh
+./srcipt/setup-venv.sh
+```
+
+## Run program
+
+```
+source venv/bin/activate
+python src/components/data_ingestion.py
+```
 
 ## Dataset
 

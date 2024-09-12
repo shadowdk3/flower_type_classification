@@ -2,6 +2,7 @@ import os
 import sys
 from src.exception import CustomException
 from src.logger import logging
+import src.utils 
 import shutil
 
 from dataclasses import dataclass
@@ -21,14 +22,8 @@ class DataIngestionConfig:
 class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
-        
-        self.class_to_label = {
-            0: 'daisy',
-            1: 'dandelion',
-            2: 'rose',
-            3: 'sunflower',
-            4: 'tulip',
-        }
+        labelmapping = src.utils.LabelMapping()
+        self.class_to_label = labelmapping.class_to_label
                 
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion method or compont")
