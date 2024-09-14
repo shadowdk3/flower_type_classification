@@ -11,7 +11,7 @@ class PredicPipeline:
     def __init__(self):
         model_path = 'artifacts/model.pkl'
         checkpoint_path = 'artifacts/checkpoint.pkl'
-        
+
         object = load_object(model_path)
         checkpoint = load_checkpoint(checkpoint_path)     
     

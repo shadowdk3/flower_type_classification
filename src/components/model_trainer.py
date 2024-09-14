@@ -60,7 +60,7 @@ class ModelTrainer:
     def initiate_model_trainer(self, train_loader, test_loader):
         try:
             logging.info("model load: %s", self.model)
-            num_epoch = 10
+            num_epoch = 50
             best_accuracy = 0
             best_epoch = 0
             best_loss = 0
@@ -74,6 +74,7 @@ class ModelTrainer:
                 losses = []
                 
                 for batch_idx, (data, targets) in loop:
+                    self.train(self.device, self.model, data, targets)
                     loss, train_correct_predictions, train_total_samples = self.train(self.device, self.model, data, targets)
                     losses.append(loss)
                     train_correct_predictions += train_correct_predictions

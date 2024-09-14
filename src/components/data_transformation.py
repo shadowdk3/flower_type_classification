@@ -6,7 +6,9 @@ from src.exception import CustomException
 from src.logger import logging
 
 import torch
+import torch.nn.functional as F
 import torch.nn as nn
+
 from torchvision import models
 from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
@@ -14,7 +16,6 @@ from torch.utils.data import DataLoader, Dataset
 from PIL import Image
 from src.utils import save_object
 import src.utils
-
 import torch.optim as optim 
 
 labelmapping = src.utils.LabelMapping()
@@ -56,7 +57,7 @@ class ImageLoader(Dataset):
             if (Image.open(dataset[index]).getbands() == ("R", "G", "B")): # Check Channels
                 datasetRGB.append(dataset[index])
         return datasetRGB
-    
+
 class DataTransformation:
     def __init__(self):
         self.data_transformation_config=DataTransformationConfig()
@@ -80,15 +81,8 @@ class DataTransformation:
     def data_model(self):
         try:
             device = "cuda" if torch.cuda.is_available() else "cpu"
-
-            model = models.resnet50(weights='ResNet50_Weights.DEFAULT')
-
-            for param in model.parameters():
-                param.requires_grad = False
-                
-            num_ftrs = model.fc.in_features
-            model.fc = nn.Linear(num_ftrs, 5)
-
+            
+            model = src.utils.CNN(num_classes=5)
             model.to(device)
             
             return model, device
@@ -105,6 +99,7 @@ class DataTransformation:
             test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)         
 
             preprocessing_obj = {}
+            self.data_model()
             model, device = self.data_model()
             preprocessing_obj['model'] = model
             preprocessing_obj['class_to_label'] = class_to_label
